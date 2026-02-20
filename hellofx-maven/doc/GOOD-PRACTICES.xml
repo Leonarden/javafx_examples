@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<good-practices>
+
+<main-context>
+Developing JavaFX MVC application, referencing Main app static variables and methods in controllers and passing "state" (dynamic) from controllers to Main app (Node references in this case).
+</main-context>
+<good-practice id="1">
+<authors sep=",">
+Daizcone, Copilot
+</authors>
+<context>
+
+</context>
+<problem> Passing GUI Elements as references: BAD practice. </problem> 
+<example>
+
+</example>
+<content>
+Here is why:
+In the context of this JavaFX application (and analogous GUI frameworks like Qt in C++), a method like switch(Node &n) that takes a reference/pointer to the current UI element (e.g., a widget or control) and updates it would not really work for making changes persist across view switches. Here's why, step by step:
+
+View Switching Mechanism: 
+In this app, App.setRoot("secondary") calls loadFXML(), which creates brand-new instances of the FXML elements (e.g., new Label objects) each time. 
+The old Node (from the previous view) is no longer part of the scene graph—it's discarded and garbage-collected. 
+Updating it has no effect on what's displayed.
+
+Reference vs. Persistence:
+Even in C++ (where &Node n is a reference), modifying n inside switch() would change the original object in memory. But if the GUI framework immediately replaces that object in the scene (e.g., by loading a new layout or widget tree), the update is invisible. The display only shows the new elements.
+Static State for Persistence: The fix we applied (updating a static kindOfMood variable and initializing views with it) works because it decouples the update from the transient UI elements. Each new view pulls the latest state from the shared variable.
+
+Why It Wouldn't Work in C++:
+If the "Node" is replaced: 
+Suppose in C++ (e.g., with Qt), switch(&n) updates n (e.g., changes text on a QLabel*), but then the app does something like: "setCentralWidget(new QWidget())" to switch views. 
+The updated n is no longer in the UI hierarchy—it's just a dangling reference. 
+Changes don't appear.
+If the "Node" is reused: 
+It might work if the same widget stays in the scene (e.g., you hide/show or modify in-place without reloading). 
+
+But in this app's design (reloading FXML), it's not the case.
+
+Threading/GUI Updates: 
+In C++ GUI frameworks, UI updates often need to be on the main thread (e.g., via signals/slots in Qt). Passing a reference could work for immediate updates, but not for cross-view persistence.
+
+Recommendation:
+
+For cross-view changes in GUI apps, always update shared state (e.g., a static/model variable) and let views initialize from it—don't rely on modifying transient UI elements. 
+</content>
+</good-practice>
+
+<good-practice id="2" >
+<authors sep=",">
+Daizcone, Copilot
+</authors>
+<context>
+
+</context>
+<problem>Using static references  across multi-views: syncrhonization? </problem>
+<example>
+In this JavaFX app, static variables like `App.kindOfMood` are used to share state between controllers and views. Controllers update the static variable, and views initialize by reading it.
+</example>
+<content>
+Synchronization is generally not an issue in this JavaFX app because all UI-related operations (including controller actions and view updates) run on the JavaFX Application Thread (FX thread). Static variables are accessed only from this single thread, avoiding race conditions.
+
+However, if your app involves background threads (e.g., for data loading or computations), updating static references from those threads requires synchronization or using `Platform.runLater()` to schedule updates on the FX thread. Failing to do so can cause IllegalStateException or UI inconsistencies.
+
+Best practices:
+a- Prefer static primitives/strings (like `String kindOfMood`) over static object references to UI elements, as the latter can cause memory leaks (preventing garbage collection of old scenes).
+
+b- If static references are needed (e.g., for a shared model), use weak references or ensure they are cleared when views change.
+
+c- For complex state, consider a proper MVC model class instead of static variables to improve testability and decoupling.
+
+</content>
+</good-practice>
+
+<good-practice id="5">
+<authors sep=",">
+</authors>
+<context>
+Unit testing best practices in a Java FX GUI project. 
+First case Using  junit-jupiter 5.10.1 framework
+</context>
+<problem>
+We want to create a basic test that checks App.kindOfMood updates and results on Views.
+</problem>
+<example>
+See class :src/main/test org.openjfx.hellofx.AppViewTest1.java
+</example>
+<content>
+
+
+</content>
+</good-practice>
+
+
+
+<good-practice id="20">
+<authors sep=",">
+</authors>
+<context>
+To be continued, as hello-maven project grows
+</context>
+<problem>
+
+</problem>
+<content>
+
+</content>
+</good-practice>
+
+
+</good-practices>
+
+
