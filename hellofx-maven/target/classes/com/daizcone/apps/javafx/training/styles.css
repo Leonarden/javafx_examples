@@ -1,0 +1,10 @@
+.button {
+    -fx-text-fill: blue;
+	
+}
+/*have to work  font type and size*/
+
+.label {
+	-fx-text-fill: black;
+			
+}

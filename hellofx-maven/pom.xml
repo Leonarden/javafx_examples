@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.openjfx</groupId>
+    <groupId>com.daizcone.apps.javafx.training</groupId>
     <artifactId>hellofx-maven</artifactId>
     <version>0.0.1-SNAPSHOT</version>
    
@@ -11,6 +11,7 @@
         <maven.compiler.release>17</maven.compiler.release>
         <javafx.version>21</javafx.version>
         <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
+        <javafx.platform>win</javafx.platform>
     </properties>
 	<dependencies>
 
@@ -101,7 +102,7 @@
                 <configuration>
                 <jlinkImageName>hello-maven</jlinkImageName>
                     <launcher>launcher</launcher>
-                    <mainClass>org.openjfx.hellofx.App</mainClass>
+                    <mainClass>com.daizcone.apps.javafx.training.App</mainClass>
                 </configuration>
             </plugin>
       </plugins>
